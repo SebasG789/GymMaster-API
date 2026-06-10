@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict a2EKIVWLuwEpNufcrfpfXnywQUwh9OLOqMio1ih4BIFugi6qHYmvaQZ9N51NhYk
+\restrict L4BuUQDR68iW3QTDxutGCPyJXWNlSKaqCe2HSrZJ5DTss0kqGW8cjmKvMcOazPk
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2026-06-09 19:01:08
+-- Started on 2026-06-09 22:28:45
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -495,11 +495,11 @@ ALTER TABLE ONLY public."Rutinas"
     ADD CONSTRAINT "FK_Rutinas_Usuarios_ClienteId" FOREIGN KEY ("ClienteId") REFERENCES public."Usuarios"("Id") ON DELETE CASCADE;
 
 
--- Completed on 2026-06-09 19:01:11
+-- Completed on 2026-06-09 22:28:46
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict a2EKIVWLuwEpNufcrfpfXnywQUwh9OLOqMio1ih4BIFugi6qHYmvaQZ9N51NhYk
+\unrestrict L4BuUQDR68iW3QTDxutGCPyJXWNlSKaqCe2HSrZJ5DTss0kqGW8cjmKvMcOazPk
 
