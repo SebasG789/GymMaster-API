@@ -62,7 +62,7 @@ namespace GymSystemApi.Controllers
             return Ok(new { mensaje = "Ejercicio actualizado correctamente" });
         }
 
-        // DELETE api/ejercicios/{id} — Solo Admin
+        // DELETE api/ejercicios/{id} — Solo Entrenador
         [HttpDelete("{id}")]
         [Authorize(Roles = "Entrenador")]
         public async Task<IActionResult> Delete(int id)
