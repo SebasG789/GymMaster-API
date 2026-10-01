@@ -2,8 +2,8 @@
 
 ## Autores
 
-Sebastián Rendón Giraldo
-Mariana Villegas 
+Sebastián Rendón Giraldo  
+Mariana Villegas
 
 
 ## Descripción
@@ -30,7 +30,7 @@ GymMaster API es el backend del sistema **GymMaster**, una plataforma para la ge
 * Entity Framework Core
 * PostgreSQL
 * JWT Authentication
-* Swagger / OpenAPI
+* OpenAPI / Scalar
 * LINQ
 * Git y GitHub
 
@@ -60,8 +60,8 @@ git --version
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/GymMaster.git
-cd GymMaster
+git clone https://github.com/SebasG789/GymMaster-API.git
+cd GymMaster-API
 ```
 
 ---
@@ -71,7 +71,7 @@ cd GymMaster
 Dentro del proyecto encontrarás el archivo:
 
 ```text
-Database/GymSystemDB.sql
+GymSystemApi/GymMaster_Backup.sql
 ```
 
 Este archivo contiene la estructura de la base de datos y los datos iniciales necesarios para ejecutar correctamente la aplicación.
@@ -94,8 +94,8 @@ Inicia pgAdmin y conéctate a tu servidor PostgreSQL.
 2. Selecciona **Create → Database...**
 3. Asigna el siguiente nombre:
 
-```
-GymSystemDB
+```text
+Gym-SystemDB
 ```
 
 4. Presiona **Save**.
@@ -106,7 +106,7 @@ GymSystemDB
 
 Selecciona la base de datos creada y luego:
 
-```
+```text
 Tools → Query Tool
 ```
 
@@ -116,8 +116,8 @@ Tools → Query Tool
 
 Haz clic en el icono **Open File** y selecciona:
 
-```
-Database/GymSystemDB.sql
+```text
+GymSystemApi/GymMaster_Backup.sql
 ```
 
 ---
@@ -126,7 +126,7 @@ Database/GymSystemDB.sql
 
 Presiona el botón **Execute** o utiliza la tecla:
 
-```
+```text
 F5
 ```
 
@@ -151,7 +151,7 @@ Si el resultado es mayor que cero, la restauración fue realizada correctamente.
 ### Paso 1. Crear una base de datos vacía
 
 ```bash
-createdb -U postgres GymSystemDB
+createdb -U postgres "Gym-SystemDB"
 ```
 
 Si la base de datos ya existe, elimínala previamente o utiliza una nueva.
@@ -160,10 +160,10 @@ Si la base de datos ya existe, elimínala previamente o utiliza una nueva.
 
 ### Paso 2. Restaurar el archivo SQL
 
-Si estás ubicado en la carpeta donde se encuentra el archivo:
+Si estás ubicado en la raíz del repositorio:
 
 ```bash
-psql -U postgres -d GymSystemDB -f GymSystemDB.sql
+psql -U postgres -d "Gym-SystemDB" -f GymSystemApi/GymMaster_Backup.sql
 ```
 
 O indicando la ruta completa:
@@ -171,13 +171,13 @@ O indicando la ruta completa:
 **Windows**
 
 ```bash
-psql -U postgres -d GymSystemDB -f "C:\ruta\completa\GymSystemDB.sql"
+psql -U postgres -d "Gym-SystemDB" -f "C:\ruta\completa\GymMaster-API\GymSystemApi\GymMaster_Backup.sql"
 ```
 
 **Linux / macOS**
 
 ```bash
-psql -U postgres -d GymSystemDB -f /ruta/completa/GymSystemDB.sql
+psql -U postgres -d "Gym-SystemDB" -f /ruta/completa/GymMaster-API/GymSystemApi/GymMaster_Backup.sql
 ```
 
 Ingresa la contraseña del usuario `postgres` cuando sea solicitada.
@@ -188,27 +188,67 @@ Una vez termine el proceso, todas las tablas y registros quedarán restaurados a
 
 # Configuración del Backend
 
-Abre el archivo:
+Por seguridad, las credenciales de PostgreSQL y la clave utilizada para firmar los tokens JWT no se almacenan directamente en el repositorio.
+
+El proyecto utiliza la configuración estándar de ASP.NET Core, por lo que estos valores pueden configurarse localmente mediante **User Secrets**.
+
+Ubícate en la carpeta:
 
 ```text
-appsettings.json
+GymSystemApi
 ```
 
-Y modifica la cadena de conexión según tu configuración local:
+```bash
+cd GymSystemApi
+```
+
+Inicializa User Secrets:
+
+```bash
+dotnet user-secrets init
+```
+
+Configura la conexión a PostgreSQL:
+
+```bash
+dotnet user-secrets set "ConnectionStrings:PostSqlConnection" "Server=127.0.0.1;Port=5432;Database=Gym-SystemDB;User Id=postgres;Password=TU_CONTRASEÑA"
+```
+
+Configura una clave privada para JWT:
+
+```bash
+dotnet user-secrets set "Jwt:Key" "TU_CLAVE_JWT_SEGURA"
+```
+
+Puedes verificar los valores configurados con:
+
+```bash
+dotnet user-secrets list
+```
+
+> Los secretos se almacenan únicamente en el equipo local y no se incluyen en Git ni en GitHub.
+
+El archivo `appsettings.json` conserva únicamente la configuración pública de la aplicación:
 
 ```json
-"ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=GymSystemDB;Username=postgres;Password=TU_CONTRASEÑA"
+{
+  "ConnectionStrings": {
+    "PostSqlConnection": ""
+  },
+  "Jwt": {
+    "Key": "",
+    "Issuer": "GymSystemApi",
+    "Audience": "GymSystemApp",
+    "ExpiresInMinutes": 60
+  }
 }
 ```
-
-Reemplaza `TU_CONTRASEÑA` por la contraseña correspondiente a tu instalación de PostgreSQL.
 
 ---
 
 # Ejecutar el Proyecto
 
-Desde la carpeta del backend ejecuta:
+Desde la carpeta `GymSystemApi` ejecuta:
 
 ```bash
 dotnet restore
@@ -253,8 +293,8 @@ Este error indica que las tablas ya existen dentro de la base de datos.
 La solución recomendada es:
 
 1. Eliminar la base de datos actual.
-2. Crear una nueva base de datos vacía llamada `GymSystemDB`.
-3. Ejecutar nuevamente el archivo `GymSystemDB.sql`.
+2. Crear una nueva base de datos vacía llamada `Gym-SystemDB`.
+3. Ejecutar nuevamente el archivo `GymMaster_Backup.sql`.
 
 ---
 
@@ -264,22 +304,30 @@ Verifica que:
 
 * PostgreSQL esté ejecutándose.
 * El puerto configurado sea el correcto (por defecto `5432`).
-* El usuario y la contraseña coincidan con los configurados en `appsettings.json`.
-* La base de datos `GymSystemDB` exista.
+* El usuario y la contraseña coincidan con los configurados mediante User Secrets.
+* La base de datos `Gym-SystemDB` exista.
 
 ---
 
-# Estructura Recomendada del Proyecto
+# Estructura del Proyecto
 
 ```text
-GymMaster
+GymMaster-API/
 │
-├── Backend/
-├── Frontend/
-├── Database/
-│   └── GymSystemDB.sql
-├── README.md
-└── ...
+├── GymSystemApi/
+│   ├── Controllers/
+│   ├── DTOs/
+│   ├── Data/
+│   ├── Migrations/
+│   ├── Models/
+│   ├── Services/
+│   ├── GymMaster_Backup.sql
+│   ├── Program.cs
+│   ├── appsettings.json
+│   └── GymSystemApi.csproj
+│
+├── GymSystem.slnx
+└── README.md
 ```
 
 ---
