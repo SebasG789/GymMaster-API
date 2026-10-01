@@ -10,6 +10,16 @@ Mariana Villegas
 
 GymMaster API es el backend del sistema **GymMaster**, una plataforma para la gestión integral de gimnasios desarrollada con **ASP.NET Core Web API**. La aplicación permite administrar usuarios, rutinas de entrenamiento, ejercicios, perfiles físicos mediante una API REST segura y escalable.
 
+## Repositorios del Proyecto
+
+GymMaster está dividido en dos repositorios:
+
+* **Frontend:** Angular + TypeScript  
+  https://github.com/SebasG789/Proyecto-GymMaster
+
+* **Backend:** ASP.NET Core + PostgreSQL  
+  https://github.com/SebasG789/GymMaster-API
+
 ---
 
 ## Características
